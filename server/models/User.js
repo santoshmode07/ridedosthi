@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    starOnlyRating: {
+        type: Number,
+        default: 0
+    },
     lastMyRidesView: {
         type: Date,
         default: Date.now

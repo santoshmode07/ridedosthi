@@ -65,7 +65,7 @@ const Register = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 md:p-12 bg-slate-900 font-outfit relative overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 md:p-8 bg-slate-900 font-outfit relative overflow-hidden">
       {/* Cinematic Background */}
       <div className="absolute inset-0 z-0">
         <img src={loginBg} alt="Background" className="w-full h-full object-cover opacity-30 scale-125 blur-[4px]" />
@@ -80,7 +80,7 @@ const Register = () => {
         initial={{ opacity: 0, scale: 0.95, y: 40 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 bg-white/5 backdrop-blur-3xl rounded-[4rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] overflow-hidden relative z-10"
+        className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] overflow-hidden relative z-10"
       >
         {/* Left Side - Themed Branding */}
         <div className="lg:col-span-5 bg-indigo-600/10 p-12 md:p-16 flex flex-col justify-between relative overflow-hidden border-r border-white/5">
@@ -94,7 +94,7 @@ const Register = () => {
                 <span className="font-bold text-2xl tracking-tighter text-white">Ride<span className="text-indigo-400">Dosthi</span></span>
               </Link>
               
-              <h2 className="text-5xl font-black text-white leading-[0.9] mb-8 tracking-tighter italic">Join the <br/><span className="text-indigo-400">Transit</span> Revolution.</h2>
+              <h2 className="text-4xl font-black text-white leading-[0.9] mb-6 tracking-tighter italic">Join the <br/><span className="text-indigo-400">Transit</span> Revolution.</h2>
               <p className="text-slate-400 text-lg font-medium leading-relaxed mb-12">Become a verified member of the most trusted professional ride-sharing network.</p>
               
               <div className="space-y-6">
@@ -132,7 +132,7 @@ const Register = () => {
         </div>
 
         {/* Right Side - Registration Flow */}
-        <div className="lg:col-span-7 p-10 md:p-16 lg:p-20 flex flex-col relative">
+        <div className="lg:col-span-7 p-8 md:p-12 lg:p-14 flex flex-col relative">
            {/* Step Indicator */}
            <div className="max-w-xs mx-auto w-full mb-16 relative">
               <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/10 -translate-y-1/2 z-0"></div>

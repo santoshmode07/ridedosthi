@@ -226,11 +226,11 @@ const LocationSelector = ({ label, placeholder, name, value, coordinates, onChan
     <div className="space-y-3 relative group">
       <label className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 ml-1 block">{label}</label>
       <div className="relative">
-        <Icon className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-indigo-600 transition-colors pointer-events-none z-10" />
+        <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-indigo-600 transition-colors pointer-events-none z-10" />
         <input 
           type="text" 
           placeholder={placeholder} 
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl py-4 pl-14 pr-24 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-slate-700 font-bold"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl py-4 pl-11 pr-20 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-slate-700 font-bold text-sm md:text-base"
           value={value}
           onChange={handleInputChange}
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}

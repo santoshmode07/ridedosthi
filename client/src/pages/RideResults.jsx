@@ -5,7 +5,7 @@ import {
   Search, MapPin, Calendar, Clock, Users, ArrowRight, ArrowLeft, ShieldCheck, 
   Star, Info, X, Navigation as NavIcon, Filter, User, IdCard, FileText, 
   ChevronRight, Car, Loader2, LayoutDashboard, LogOut, TrendingUp,
-  Map, Sparkles, CheckCircle2, Phone, CreditCard, Banknote
+  Map, Sparkles, CheckCircle2, Phone, CreditCard, Banknote, Bike
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../api/axios';
@@ -90,6 +90,7 @@ const RideResults = () => {
   const pLng = searchParams.get('passengerLng');
   const dLat = searchParams.get('destinationLat');
   const dLng = searchParams.get('destinationLng');
+  const vehicleType = searchParams.get('vehicleType');
 
   useEffect(() => {
     const fetchRides = async () => {
@@ -102,7 +103,8 @@ const RideResults = () => {
           passengerLat: pLat || '',
           passengerLng: pLng || '',
           destinationLat: dLat || '',
-          destinationLng: dLng || ''
+          destinationLng: dLng || '',
+          vehicleType: vehicleType || ''
         }).toString();
         
         const res = await api.get(`/rides?${query}`);
@@ -114,7 +116,7 @@ const RideResults = () => {
       }
     };
     fetchRides();
-  }, [from, to, date, pLat, pLng, dLat, dLng]);
+  }, [from, to, date, pLat, pLng, dLat, dLng, vehicleType]);
 
   useEffect(() => {
     if (!socket || !isConnected) return;
@@ -358,6 +360,10 @@ const RideResults = () => {
                           {ride.genderPreference.replace('-only', '')}
                         </div>
                       )}
+                      <div className="px-6 py-4 rounded-b-[2.5rem] bg-white text-slate-900 text-[10px] font-black tracking-[0.3em] flex items-center gap-2 uppercase z-10 shadow-xl border-t-0 border-l border-slate-100">
+                         {ride.vehicleType === 'Bike' ? <Bike size={14} className="text-indigo-600" /> : <Car size={14} className="text-indigo-600" />}
+                         {ride.vehicleType || 'Car'}
+                      </div>
                    </div>
 
                    <div className="flex items-center gap-5 mb-10">
@@ -378,10 +384,10 @@ const RideResults = () => {
                              </h3>
                           </div>
                           <div className="flex flex-wrap items-center gap-3">
-                             <div className="flex items-center bg-amber-50 border border-amber-100/50 px-2 py-1 rounded-lg">
-                                <Star size={10} className="text-amber-500 fill-amber-500 mr-1" />
-                                <span className="text-[10px] font-black text-amber-900 italic tracking-tighter">{ride.driver?.averageRating || 'NEW'}</span>
-                             </div>
+                              <div className="flex items-center bg-amber-50 border border-amber-100/50 px-2 py-1 rounded-lg">
+                                 <Star size={10} className="text-amber-500 fill-amber-500 mr-1" />
+                                 <span className="text-[10px] font-black text-amber-900 italic tracking-tighter">{ride.driver?.averageRating?.toFixed(1) || 'NEW'}</span>
+                              </div>
                              
                              <div className="flex items-center gap-1.5">
                                 <div className="h-1 w-10 bg-slate-100 rounded-full overflow-hidden">
@@ -541,10 +547,10 @@ const RideResults = () => {
                             <div className="flex items-center gap-4 mt-2">
                                <div className="flex items-center gap-1.5">
                                  <Star size={18} className="text-amber-500 fill-amber-500" />
-                                 <span className="font-extrabold text-slate-600 text-lg">{selectedRide.driver?.averageRating || '0.0'}</span>
+                                 <span className="font-extrabold text-slate-800 text-lg">{selectedRide.driver?.averageRating?.toFixed(1) || '0.0'}</span>
                                </div>
                                <div className="h-1 w-1 rounded-full bg-slate-500"></div>
-                               <span className="text-sm font-bold text-slate-600 uppercase tracking-[.15em]">{selectedRide.driver?.totalRatings} reviews</span>
+                               <span className="text-sm font-bold text-slate-600 uppercase tracking-[.15em]">{selectedRide.driver?.totalRatings || 0} reviews</span>
                                <div className="h-1 w-1 rounded-full bg-slate-500"></div>
                                <div className="flex items-center gap-1.5 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-100/50">
                                  <Calendar size={14} className="text-indigo-600" />
@@ -630,7 +636,7 @@ const RideResults = () => {
                             </h4>
                             <div className="bg-[#F8FAFC] p-8 rounded-[3rem] border border-slate-100 flex items-center gap-6 shadow-inner">
                                <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm border border-slate-50">
-                                  <Car size={32} />
+                                  {selectedRide.vehicleType === 'Bike' ? <Bike size={32} /> : <Car size={32} />}
                                </div>
                                <div>
                                   <p className="font-black text-slate-800 text-lg uppercase tracking-tight leading-none mb-2 italic">{selectedRide.carModel}</p>

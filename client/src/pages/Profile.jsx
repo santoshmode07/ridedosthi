@@ -11,7 +11,7 @@ import {
   AlertTriangle, History, Zap, Ban, Wallet, CreditCard, ArrowUpRight,
   DollarSign, IndianRupee, Eye, EyeOff, RefreshCw, AlertCircle, X,
   Save, Key, UserCircle, Camera, Upload, Clock, Trash2, 
-  MessageSquare, Navigation
+  MessageSquare, Navigation, Sparkles
 } from 'lucide-react';
 
 import Navbar from '../components/Navbar';
@@ -329,8 +329,8 @@ const Profile = () => {
   ] : [
     { label: 'Trust Score', value: user?.trustScore || 100, icon: Shield, color: 'text-indigo-600', bg: 'bg-indigo-50' },
     { label: 'Trips Completed', value: user?.totalCompletedRides || 0, icon: MapPin, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Rating', value: user?.averageRating || 5.0, icon: Star, color: 'text-amber-500', bg: 'bg-amber-50' },
-    { label: 'History', value: `${user?.totalCancellations || 0} Cancels`, icon: History, color: 'text-purple-600', bg: 'bg-purple-50' }
+    { label: 'Average Rating', value: user?.averageRating?.toFixed(1) || 5.0, icon: Star, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { label: 'Verified Feedback', value: user?.totalRatings || 0, icon: MessageSquare, color: 'text-indigo-600', bg: 'bg-indigo-50' }
   ];
 
   return (
@@ -720,8 +720,8 @@ const Profile = () => {
                      
                      <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-6 py-3 rounded-2xl">
                         <Star className="text-amber-500 fill-amber-500" size={16} />
-                        <span className="text-xl font-black text-slate-800 italic">{user?.averageRating || '5.0'}</span>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2 border-l border-slate-200">Global Score</span>
+                        <span className="text-xl font-black text-slate-800 italic">{user?.averageRating?.toFixed(1) || '5.0'}</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2 border-l border-slate-200">Global Rating</span>
                      </div>
                   </div>
 
@@ -775,16 +775,25 @@ const Profile = () => {
                                              <Star 
                                                key={i} 
                                                size={10} 
-                                               className={i < rev.rating ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}
+                                               className={i < (rev.rating || 0) ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}
                                              />
                                           ))}
                                        </div>
+                                       {rev.conflictDetected && (
+                                          <div className="mt-1 flex items-center gap-1.5 animate-pulse">
+                                             <div className="h-1 w-1 rounded-full bg-rose-500"></div>
+                                             <span className="text-[8px] font-black text-rose-600 uppercase tracking-widest italic">AI Conflict Adjusted</span>
+                                          </div>
+                                       )}
                                     </div>
                                  </div>
-                                 <div className="text-right">
-                                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none">
+                                 <div className="text-right flex flex-col items-end">
+                                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">
                                        {new Date(rev.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                                     </p>
+                                    <div className="bg-indigo-50 px-2 py-0.5 rounded text-[8px] font-black text-indigo-600 tracking-tighter italic">
+                                       AI: {rev.finalRating?.toFixed(1) || rev.rating}
+                                    </div>
                                  </div>
                               </div>
 

@@ -62,6 +62,11 @@ const rideSchema = new mongoose.Schema({
     required: [true, 'Number of available seats is required'],
     min: [0, 'Available seats cannot be negative']
   },
+  vehicleType: {
+    type: String,
+    enum: ['Car', 'Bike'],
+    default: 'Car'
+  },
   carModel: {
     type: String,
     required: [true, 'Vehicle Model is required']

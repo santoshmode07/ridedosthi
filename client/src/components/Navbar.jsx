@@ -26,18 +26,18 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] px-6 md:px-12 py-4 bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-[100] px-6 md:px-12 py-3 bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm flex items-center justify-between">
       <div className="flex items-center gap-4">
         <Link to="/dashboard" className="flex items-center gap-4 group">
           <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200 transform group-hover:rotate-12 transition-transform duration-300">
             <LayoutDashboard className="text-white h-5 w-5" />
           </div>
-          <span className="font-bold text-2xl tracking-tighter text-slate-800">Ride<span className="text-indigo-600">Dosthi</span></span>
+          <span className="font-bold text-xl tracking-tighter text-slate-800">Ride<span className="text-indigo-600">Dosthi</span></span>
         </Link>
       </div>
 
       <div className="flex items-center gap-6">
-        <div className="hidden lg:flex items-center gap-10">
+        <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link 
               key={link.path}

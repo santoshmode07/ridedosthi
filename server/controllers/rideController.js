@@ -512,7 +512,7 @@ const getRoutePoints = async (fromCoords, toCoords) => {
 // @access  Private (Driver)
 exports.offerRide = async (req, res) => {
   try {
-    let { from, to, date, time, seatsAvailable, carModel, carNumber, price, fromCoordinates, toCoordinates, waitingTime, genderPreference } = req.body;
+    let { from, to, date, time, seatsAvailable, carModel, carNumber, price, fromCoordinates, toCoordinates, waitingTime, genderPreference, vehicleType } = req.body;
     // RESTRICTION CHECK (Phase 4)
     if (req.user.restrictedUntil && new Date(req.user.restrictedUntil) > new Date()) {
        return res.status(403).json({ 
@@ -581,6 +581,7 @@ exports.offerRide = async (req, res) => {
       driverGender,
       expiresAt,
       waitingTime: wTime,
+      vehicleType: vehicleType || 'Car',
       bookings: []
     });
 
@@ -626,7 +627,8 @@ exports.getAllRides = async (req, res) => {
     let { 
       from, to, date, 
       passengerLat, passengerLng, 
-      destinationLat, destinationLng 
+      destinationLat, destinationLng,
+      vehicleType 
     } = req.query;
 
     const pLat = parseFloat(passengerLat);
@@ -643,6 +645,10 @@ exports.getAllRides = async (req, res) => {
       seatsAvailable: { $gt: 0 },
       expiresAt: { $gt: new Date() } // Hard filter for expiry
     };
+
+    if (vehicleType) {
+        query.vehicleType = vehicleType;
+    }
 
     // EDGE CASE 1: Date Filter (Flexible)
     // If no date is provided, we don't add query.date, showing all future rides.
@@ -682,7 +688,7 @@ exports.getAllRides = async (req, res) => {
         }
       })
       .populate('driver', 'name averageRating trustScore isVerified profilePhoto gender')
-      .select('from to date time seatsAvailable price driverGender genderPreference status expiresAt driver fromCoordinates toCoordinates routePoints routePointsStatus bookings')
+      .select('from to date time seatsAvailable price driverGender genderPreference status expiresAt driver fromCoordinates toCoordinates routePoints routePointsStatus bookings vehicleType carModel carNumber')
       .lean();
 
       // Filter by: 1. Passes near Destination, 2. Source is before Destination in route
@@ -779,7 +785,7 @@ exports.getAllRides = async (req, res) => {
          ]
        })
        .populate('driver', 'name averageRating trustScore isVerified profilePhoto gender')
-       .select('from to date time seatsAvailable price driverGender genderPreference status expiresAt driver fromCoordinates toCoordinates routePoints routePointsStatus bookings')
+       .select('from to date time seatsAvailable price driverGender genderPreference status expiresAt driver fromCoordinates toCoordinates routePoints routePointsStatus bookings vehicleType carModel carNumber')
        .lean();
 
        console.log(`[RideSearch] Phase B: Found ${textCandidates.length} matches.`);
@@ -791,7 +797,7 @@ exports.getAllRides = async (req, res) => {
        console.log(`[RideSearch] Phase C: Destination empty - browsing all.`);
        const allAvailable = await Ride.find({ ...query, ...genderQuery })
          .populate('driver', 'name averageRating trustScore isVerified profilePhoto gender')
-         .select('from to date time seatsAvailable price driverGender genderPreference status expiresAt driver fromCoordinates toCoordinates routePoints routePointsStatus bookings')
+         .select('from to date time seatsAvailable price driverGender genderPreference status expiresAt driver fromCoordinates toCoordinates routePoints routePointsStatus bookings vehicleType carModel carNumber')
          .limit(50)
          .lean();
        CandidatePool.push(...allAvailable);
@@ -1118,7 +1124,7 @@ exports.cancelRide = async (req, res) => {
         // SCENARIO 3: < 30 min
         penaltyType = 'strike';
         trustImpact = 15; // -15 points for late strike
-        restrictionHours = 168; // Increased to 1 week
+        restrictionHours = 48; // Updated to 2 days
       }
 
       // Genuine Emergency exception (Edge Case 3) - MISSION UPGRADE
@@ -1149,15 +1155,15 @@ exports.cancelRide = async (req, res) => {
     if (penaltyType === 'warning') {
       rider.warnings += 1;
       if (rider.warnings >= 3) {
-        restrictionHours = 168; // Increased to 1 week
+        restrictionHours = 48; // Updated to 2 days
         rider.warnings = 0; // Reset after suspension
       }
     } else if (penaltyType === 'strike') {
       rider.strikes += 1;
       rider.lastStrikeAt = new Date();
-      if (rider.strikes === 1) restrictionHours = Math.max(restrictionHours, 168); // 1 Week
-      else if (rider.strikes === 2) restrictionHours = 336; // 2 Weeks
-      else if (rider.strikes === 3) restrictionHours = 720; // 1 Month
+      if (rider.strikes === 1) restrictionHours = Math.max(restrictionHours, 48); // 2 Days
+      else if (rider.strikes === 2) restrictionHours = 48; // 2 Days
+      else if (rider.strikes === 3) restrictionHours = 48; // 2 Days
     }
 
     if (restrictionHours > 0) {

@@ -40,12 +40,12 @@ const Dashboard = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="text-center mb-16 space-y-4"
+          className="text-center mb-10 space-y-3"
         >
           <motion.div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-indigo-100 italic mb-4">
             <Sparkles size={12} fill="currentColor" /> Welcome Back
           </motion.div>
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none italic">
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none italic">
             Hello, <span className="text-indigo-600">{user?.name?.split(' ')[0]}</span>
           </h1>
           <p className="text-slate-500 font-medium text-lg max-w-xl mx-auto italic mb-6">
@@ -157,7 +157,7 @@ const Dashboard = () => {
                          <div className="flex items-center gap-2 text-[10px] font-black tracking-[0.2em] uppercase opacity-60 mb-2 justify-center lg:justify-start">
                             <TrendingUp size={14} /> Active Transit Status
                          </div>
-                         <h2 className="text-3xl md:text-4xl font-black italic">Manage Your <span className="text-indigo-200">Active Rides</span></h2>
+                         <h2 className="text-2xl md:text-3xl font-black italic">Manage Your <span className="text-indigo-200">Active Rides</span></h2>
                          <p className="text-indigo-100 font-medium max-w-md">You have {driverStats.activeRidesCount} active rides with {driverStats.totalBookingsCount} confirmed passengers.</p>
                       </div>
                       <div className="flex gap-4">
@@ -190,7 +190,7 @@ const Dashboard = () => {
               <div className="h-20 w-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
                 <Search size={36} strokeWidth={2.5} />
               </div>
-              <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tighter italic">Find a Ride</h3>
+              <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tighter italic">Find a Ride</h3>
               <p className="text-slate-500 font-medium italic opacity-80 mb-10">Search and join verified rides in your city.</p>
               <div className="mt-auto flex items-center gap-3 text-indigo-600 font-black text-xs uppercase tracking-widest italic group-hover:gap-5 transition-all">
                 Search Now <ArrowRight size={16} />
@@ -208,7 +208,7 @@ const Dashboard = () => {
               <div className="h-20 w-20 bg-white/10 text-white rounded-2xl flex items-center justify-center mb-10 group-hover:bg-indigo-600 transition-all duration-500">
                 <MapPin size={36} strokeWidth={2.5} />
               </div>
-              <h3 className="text-3xl font-black mb-4 tracking-tighter italic">Offer a Ride</h3>
+              <h3 className="text-2xl font-black mb-4 tracking-tighter italic">Offer a Ride</h3>
               <p className="text-slate-400 font-medium italic opacity-80 mb-10">Register your route and earn while you commute.</p>
               <div className="mt-auto flex items-center gap-3 text-indigo-400 font-black text-xs uppercase tracking-widest italic group-hover:gap-5 transition-all">
                 Start Offering <ArrowRight size={16} />

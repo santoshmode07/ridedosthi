@@ -135,3 +135,8 @@ body {
   isolation: isolate;
   background-clip: padding-box;
 }
+
+/* Ensure Toastify notifications always appear on top of our premium modals */
+.Toastify__toast-container {
+  z-index: 99999 !important;
+}

@@ -70,10 +70,10 @@ const SupportChat = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[350px] md:w-[400px] h-[550px] glass rounded-[2rem] shadow-2xl flex flex-col overflow-hidden border border-white/40"
+            className="mb-4 w-[320px] md:w-[360px] h-[480px] md:h-[500px] glass rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/40"
           >
             {/* Header */}
-            <div className="p-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex justify-between items-center shadow-lg">
+            <div className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex justify-between items-center shadow-lg">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30">
                   <IoChatbubblesSharp className="text-xl" />
@@ -99,7 +99,7 @@ const SupportChat = () => {
             {/* Messages */}
             <div 
               ref={scrollRef}
-              className="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar bg-slate-50/50"
+              className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-slate-50/50"
             >
               {messages.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
@@ -153,7 +153,7 @@ const SupportChat = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="How can we help you today?"
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 md:text-base transition-all"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
               />
               <button
                 disabled={isLoading || !input.trim()}
@@ -171,7 +171,7 @@ const SupportChat = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 rounded-full shadow-2xl flex items-center justify-center text-white text-3xl hover:shadow-indigo-300 transition-shadow relative group"
+        className="w-14 h-14 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl hover:shadow-indigo-300 transition-shadow relative group"
       >
         <div className="absolute inset-0 rounded-full bg-indigo-600 animate-ping opacity-20 -z-10 group-hover:block" />
         {isOpen ? <IoClose /> : <IoChatbubblesSharp />}
