@@ -333,10 +333,18 @@ exports.getMyBookings = async (req, res) => {
     .select('from to date time carModel carNumber price seatsAvailable status bookings driver')
     .lean();
 
-    const myBookings = rides.map(ride => {
+    const myBookings = await Promise.all(rides.map(async ride => {
       const myBooking = ride.bookings.find(
         b => b.passenger.toString() === req.user._id.toString() && b.status === 'confirmed'
       );
+
+      // Check if this user has already reviewed this ride
+      const Review = mongoose.model('Review');
+      const hasReviewed = await Review.exists({
+        reviewer: req.user._id,
+        rideId: ride._id
+      });
+
       return {
         ride: {
           _id: ride._id,
@@ -349,9 +357,12 @@ exports.getMyBookings = async (req, res) => {
           status: ride.status,
           driver: ride.driver
         },
-        booking: myBooking
+        booking: {
+          ...myBooking,
+          isReviewed: !!hasReviewed
+        }
       };
-    });
+    }));
 
     res.status(200).json({
       success: true,

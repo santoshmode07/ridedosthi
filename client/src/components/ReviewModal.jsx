@@ -29,7 +29,15 @@ const ReviewModal = ({ isOpen, onClose, rideId, subject, onReviewSuccess }) => {
         // We don't close immediately now, we show the analysis card
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to submit feedback');
+      const errorMsg = err.response?.data?.message || 'Failed to submit feedback';
+      toast.error(errorMsg);
+      
+      // If the error is about duplicate submission, we should trigger a refresh 
+      // anyway to hide the button in the parent component
+      if (errorMsg.includes('already submitted') || errorMsg.includes('Duplicate')) {
+        if (onReviewSuccess) onReviewSuccess();
+      }
+    } finally {
       setSubmitting(false);
     }
   };

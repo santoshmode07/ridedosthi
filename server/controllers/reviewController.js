@@ -31,22 +31,20 @@ exports.createReview = async (req, res) => {
     const now = new Date();
     const isPastRide = now > new Date(departureDate.getTime() + 6 * 60 * 60 * 1000);
 
-    if (ride.status !== 'completed' && !isPastRide) {
-      console.warn(`[Review] Validation failed: Ride status is ${ride.status} and ride not yet logically expired. RideID: ${rideId}`);
-      return res.status(400).json({ success: false, message: 'You can only leave feedback for completed or concluded rides' });
-    }
-    
-    // But don't allow reviews for explicitly cancelled rides
-    if (ride.status === 'cancelled') {
-        return res.status(400).json({ success: false, message: 'You cannot leave feedback for a journey that was cancelled.' });
-    }
-
     // 3. Logic validation: Reviewer and Subject must be participants
     const driverId = ride.driver.toString();
     const confirmedBookings = ride.bookings.filter(b => b.status === 'confirmed');
     const passengerIds = confirmedBookings.map(b => b.passenger.toString());
-    
     const reviewerId = req.user._id.toString();
+
+    // Check if the individual journey for this reviewer is concluded
+    const myBooking = ride.bookings.find(b => b.passenger.toString() === reviewerId);
+    const isIndividuallyConcluded = myBooking && ['confirmed', 'auto_released', 'refunded'].includes(myBooking.dropoffStatus);
+
+    if (ride.status !== 'completed' && !isPastRide && !isIndividuallyConcluded) {
+      console.warn(`[Review] Validation failed: Ride status is ${ride.status} and journey not yet concluded for reviewer. RideID: ${rideId}`);
+      return res.status(400).json({ success: false, message: 'You can only leave feedback for completed or concluded rides' });
+    }
     
     // Check Reviewer Participation
     const isReviewerInRide = (reviewerId === driverId) || passengerIds.includes(reviewerId);

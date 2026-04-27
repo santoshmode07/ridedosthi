@@ -22,12 +22,6 @@ const { startCronJobs } = require('./controllers/rideController');
 const socketMiddleware = require('./middleware/socketMiddleware');
 const socketManager = require('./utils/socketManager');
 
-// Connect to database
-connectDB();
-
-// Start Background Hardening Tasks
-startCronJobs();
-
 const app = express();
 const httpServer = http.createServer(app);
 
@@ -102,15 +96,34 @@ app.use((req, res, next) => {
     res.status(404).json({ success: false, message: 'Route not found' });
 });
 
-const PORT = process.env.PORT || 5000;
+/**
+ * Main Initialization Block
+ */
+const startServer = async () => {
+    try {
+        // 1. Connect to database first
+        await connectDB();
+        console.log('📦 Database sync established.');
 
-httpServer.listen(PORT, () => {
-    console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT} (Socket.io active)`);
-});
+        // 2. Start Background Hardening Tasks only after DB is ready
+        startCronJobs();
+
+        // 3. Start listening
+        const PORT = process.env.PORT || 5000;
+        httpServer.listen(PORT, () => {
+            console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT} (Socket.io active)`);
+        });
+    } catch (error) {
+        console.error('❌ Critical Startup Failure:', error.message);
+        process.exit(1);
+    }
+};
+
+startServer();
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-    console.error(`Error: ${err.message}`);
-    // Close server & exit process
-    httpServer.close(() => process.exit(1));
+    console.error(`🔴 Unhandled Rejection: ${err.message}`);
+    // Optional: Log stack trace for debugging
+    // console.error(err.stack);
 });

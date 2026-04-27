@@ -70,7 +70,7 @@ const Dashboard = () => {
                   </div>
                   <h3 className="text-2xl font-black tracking-tight italic uppercase leading-none mb-2">Priority Passenger</h3>
                   <p className="text-indigo-200/60 font-medium text-[10px] uppercase tracking-widest italic">
-                    Expiring: {new Date(user.priorityBadgeExpires).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    Expiring: {new Date(user.priorityBadgeExpires).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                </div>
                <div className="hidden md:flex flex-col items-start gap-3 border-l border-white/10 pl-6 ml-4">

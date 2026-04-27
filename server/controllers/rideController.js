@@ -1315,7 +1315,8 @@ exports.reportNoShow = async (req, res) => {
     const departureTime = new Date(`${ride.date.toISOString().split('T')[0]}T${ride.time}`);
     const diffMinutes = (now - departureTime) / (1000 * 60);
 
-    if (diffMinutes < 15) return res.status(400).json({ success: false, message: 'You must wait at least 15 minutes after scheduled departure before reporting a no-show.' });
+    const waitTime = ride.waitingTime || 10;
+    if (diffMinutes < waitTime) return res.status(400).json({ success: false, message: `You must wait at least ${waitTime} minutes after scheduled departure before reporting a no-show.` });
     if (diffMinutes > 45) return res.status(400).json({ success: false, message: 'No show reporting window (45 min) has closed.' });
 
     // Check if passenger booked this ride

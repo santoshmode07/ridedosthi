@@ -32,10 +32,10 @@ const OTPDisplay = ({ booking, ride }) => {
      <motion.div 
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl flex items-center gap-4 w-full"
+        className="bg-emerald-50 border border-emerald-100 p-3 rounded-2xl flex items-center gap-4 w-full"
      >
-        <div className="h-10 w-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200">
-           <CheckCircle2 size={20} />
+        <div className="h-8 w-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200">
+           <CheckCircle2 size={16} />
         </div>
         <div className="flex-1 min-w-0">
            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Boarding Pass Used</p>
@@ -49,11 +49,11 @@ const OTPDisplay = ({ booking, ride }) => {
     <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-rose-50 border border-rose-100 p-4 rounded-2xl flex items-center justify-between w-full"
+        className="bg-rose-50 border border-rose-100 p-3 rounded-2xl flex items-center justify-between w-full"
     >
        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 bg-rose-600 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-rose-200">
-             <AlertCircle size={20} />
+          <div className="h-8 w-8 bg-rose-600 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-rose-200">
+             <AlertCircle size={16} />
           </div>
           <div>
              <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest leading-none mb-1">Time Expired</p>

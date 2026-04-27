@@ -122,7 +122,7 @@ const BoardingScreen = () => {
         </div>
 
         {/* Action Button */}
-        <div className="sticky bottom-10 z-50">
+        <div className="sticky bottom-10 z-[200]">
            <MarkArrivedButton 
              rideId={rideId} 
              departureTime={departureTime}
