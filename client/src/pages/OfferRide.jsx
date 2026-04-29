@@ -350,7 +350,7 @@ const OfferRide = () => {
                         <label className={labelClass}>Waiting Duration (Mins)</label>
                         <div className={inputContainerClass}>
                            <Clock className={iconClass} />
-                           <input name="waitingTime" type="number" min="5" max="60" className="input-field !py-4 pl-14 font-bold" value={formData.waitingTime} onChange={handleChange} required />
+                           <input name="waitingTime" type="number" min="1" max="60" className="input-field !py-4 pl-14 font-bold" value={formData.waitingTime} onChange={handleChange} required />
                         </div>
                         <p className="text-[10px] font-bold text-slate-400 italic ml-1">Time to wait for passengers before starting.</p>
                      </div>
