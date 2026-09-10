@@ -57,20 +57,20 @@ const Login = () => {
             <div className="bg-indigo-600 p-3 rounded-2xl shadow-2xl shadow-indigo-500/50 transform group-hover:rotate-12 transition-transform duration-500">
                <LayoutDashboard className="text-white h-6 w-6" />
             </div>
-            <span className="font-bold text-3xl tracking-tighter text-white">Ride<span className="text-indigo-400">Dosthi</span></span>
+            <span className="font-bold text-2xl tracking-tighter text-white">Ride<span className="text-indigo-400">Dosthi</span></span>
           </Link>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            <h1 className="text-4xl font-black text-white tracking-tighter mb-2 italic">Back in Action.</h1>
+            <h1 className="text-3xl font-black text-white tracking-tighter mb-2 italic">Back in Action.</h1>
             <p className="text-slate-400 font-medium">Your next safe journey is just a click away.</p>
           </motion.div>
         </div>
 
         {/* Glass Login Form */}
-        <div className="bg-white/5 backdrop-blur-3xl p-8 md:p-10 rounded-[3rem] border border-white/10 shadow-2xl shadow-black/50 overflow-hidden relative group">
+        <div className="bg-white/5 backdrop-blur-3xl p-6 md:p-8 rounded-[2rem] border border-white/10 shadow-2xl shadow-black/50 overflow-hidden relative group">
           {/* Animated border effect */}
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
           

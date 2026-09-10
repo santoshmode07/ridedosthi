@@ -1,19 +1,22 @@
 const Review = require('../models/Review');
 const User = require('../models/User');
 const Ride = require('../models/Ride');
+const { analyzeSentiment, measureReviewIntensity, detectConflict, calculateFinalRating } = require('../utils/sentimentAnalyzer');
 
 // @desc    Create a review for a user after a ride
 // @route   POST /api/reviews/:rideId/:userId
 // @access  Private
 exports.createReview = async (req, res) => {
   try {
-    const { rating, comment } = req.body;
+    const { rating: starRating, comment } = req.body;
     const { rideId, userId: subjectId } = req.params;
 
-    // 1. Basic validation
-    if (!rating || !comment) {
-      return res.status(400).json({ success: false, message: 'Rating and comment are required' });
+    // 1. Basic validation (Star rating is mandatory, comment is optional)
+    if (!starRating) {
+      return res.status(400).json({ success: false, message: 'Rating is required' });
     }
+
+    const reviewComment = comment || "";
 
     // 2. Fetch Ride and validate
     const ride = await Ride.findById(rideId);
@@ -21,28 +24,38 @@ exports.createReview = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Ride not found' });
     }
 
-    if (ride.status !== 'completed') {
-      return res.status(400).json({ success: false, message: 'You can only leave feedback for completed rides' });
-    }
+    // Determine logical completion (Current time > Departure + 6 hours)
+    const departureDate = new Date(ride.date);
+    const [hours, minutes] = ride.time.split(':').map(Number);
+    departureDate.setHours(hours, minutes, 0, 0);
+    const now = new Date();
+    const isPastRide = now > new Date(departureDate.getTime() + 6 * 60 * 60 * 1000);
 
     // 3. Logic validation: Reviewer and Subject must be participants
-    // Using string comparison for safety across different ID formats
     const driverId = ride.driver.toString();
     const confirmedBookings = ride.bookings.filter(b => b.status === 'confirmed');
     const passengerIds = confirmedBookings.map(b => b.passenger.toString());
-    
     const reviewerId = req.user._id.toString();
+
+    // Check if the individual journey for this reviewer is concluded
+    const myBooking = ride.bookings.find(b => b.passenger.toString() === reviewerId);
+    const isIndividuallyConcluded = myBooking && ['confirmed', 'auto_released', 'refunded'].includes(myBooking.dropoffStatus);
+
+    if (ride.status !== 'completed' && !isPastRide && !isIndividuallyConcluded) {
+      console.warn(`[Review] Validation failed: Ride status is ${ride.status} and journey not yet concluded for reviewer. RideID: ${rideId}`);
+      return res.status(400).json({ success: false, message: 'You can only leave feedback for completed or concluded rides' });
+    }
     
     // Check Reviewer Participation
     const isReviewerInRide = (reviewerId === driverId) || passengerIds.includes(reviewerId);
     if (!isReviewerInRide) {
-      console.warn(`[ReviewBlock] 🚫 Unauthorized: User ${reviewerId} not found in participants of Ride ${rideId}`);
       return res.status(403).json({ success: false, message: 'Access Denied: You were not a participant in this journey.' });
     }
 
     // Check Subject Participation
     const isSubjectInRide = (subjectId === driverId) || passengerIds.includes(subjectId);
     if (!isSubjectInRide) {
+       console.warn(`[Review] Validation failed: Subject ${subjectId} not found in ride roster. RideID: ${rideId}`);
        return res.status(400).json({ success: false, message: 'The user you are trying to review was not part of this ride roster.' });
     }
 
@@ -51,23 +64,58 @@ exports.createReview = async (req, res) => {
       return res.status(400).json({ success: false, message: 'You cannot review yourself' });
     }
 
-    // 4. Create Review
-    // Wrapped in try/catch specifically for duplicate identification
+    // 4. Sentiment Analysis Pipeline
+    const sentimentResult = await analyzeSentiment(reviewComment);
+    const intensityResult = measureReviewIntensity(reviewComment);
+    const conflictResult = detectConflict(starRating, sentimentResult.sentimentScore);
+    const finalRatingResult = calculateFinalRating(
+      starRating,
+      sentimentResult.sentimentScore,
+      intensityResult.intensityScore,
+      conflictResult
+    );
+
+    // 5. Create Review
     try {
       const review = await Review.create({
         reviewer: reviewerId,
         subject: subjectId,
         rideId,
-        rating,
-        comment
+        rating: starRating,
+        comment: reviewComment,
+        sentimentScore: sentimentResult.sentimentScore,
+        sentimentLabel: sentimentResult.label,
+        intensityLevel: intensityResult.intensityLevel,
+        conflictDetected: conflictResult.conflictDetected,
+        finalRating: finalRatingResult.finalRating,
+        starWeight: finalRatingResult.starWeight,
+        sentimentWeight: finalRatingResult.sentimentWeight,
+        sentimentAnalysis: {
+          rawPositive: sentimentResult.positiveScore,
+          rawNegative: sentimentResult.negativeScore,
+          rawNeutral: sentimentResult.neutralScore,
+          confidence: sentimentResult.confidence,
+          wordCount: intensityResult.wordCount,
+          hasStrongEmotion: intensityResult.hasStrongEmotion,
+          hasSpecificDetails: intensityResult.hasSpecificDetails
+        }
       });
 
-      console.log(`[Review] ⭐ New review from ${reviewerId} for ${subjectId} via Ride ${rideId}`);
+      console.log(`[Review] ⭐ New AI-Verified review from ${reviewerId} for ${subjectId} via Ride ${rideId}`);
 
       res.status(201).json({
         success: true,
         message: 'Feedback submitted successfully',
-        data: review
+        data: {
+          review,
+          analysis: {
+            yourStars: starRating,
+            sentimentDetected: sentimentResult.label,
+            finalRatingGiven: finalRatingResult.finalRating,
+            conflictDetected: conflictResult.conflictDetected,
+            message: finalRatingResult.calculation
+          }
+        }
       });
     } catch (err) {
       if (err.code === 11000) {

@@ -5,7 +5,7 @@ import {
   Search, MapPin, Calendar, Clock, Users, ArrowRight, ArrowLeft, ShieldCheck, 
   Star, Info, X, Navigation as NavIcon, Filter, User, IdCard, FileText, 
   ChevronRight, Car, Loader2, LayoutDashboard, LogOut, TrendingUp,
-  Map, Sparkles, CheckCircle2, Phone, CreditCard, Banknote
+  Map, Sparkles, CheckCircle2, Phone, CreditCard, Banknote, Bike
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../api/axios';
@@ -90,6 +90,7 @@ const RideResults = () => {
   const pLng = searchParams.get('passengerLng');
   const dLat = searchParams.get('destinationLat');
   const dLng = searchParams.get('destinationLng');
+  const vehicleType = searchParams.get('vehicleType');
 
   useEffect(() => {
     const fetchRides = async () => {
@@ -102,7 +103,8 @@ const RideResults = () => {
           passengerLat: pLat || '',
           passengerLng: pLng || '',
           destinationLat: dLat || '',
-          destinationLng: dLng || ''
+          destinationLng: dLng || '',
+          vehicleType: vehicleType || ''
         }).toString();
         
         const res = await api.get(`/rides?${query}`);
@@ -114,7 +116,7 @@ const RideResults = () => {
       }
     };
     fetchRides();
-  }, [from, to, date, pLat, pLng, dLat, dLng]);
+  }, [from, to, date, pLat, pLng, dLat, dLng, vehicleType]);
 
   useEffect(() => {
     if (!socket || !isConnected) return;
@@ -345,23 +347,27 @@ const RideResults = () => {
                    key={ride._id}
                    whileHover={{ y: -15, shadow: '0 50px 100px -20px rgba(0,0,0,0.1)' }}
                    onClick={() => openRideDetails(ride._id)}
-                   className="bg-white p-10 rounded-[4.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.06)] border-2 border-slate-100/50 cursor-pointer group relative overflow-hidden transition-all duration-500"
+                   className="bg-white p-7 rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.06)] border-2 border-slate-100/50 cursor-pointer group relative overflow-hidden transition-all duration-500"
                  >
                    {/* Background Gradient Detail */}
                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 opacity-0 group-hover:opacity-40 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 transition-opacity duration-700"></div>
 
                    {/* Safety & Status Badge */}
-                   <div className="absolute top-0 right-12 flex">
+                   <div className="absolute top-0 right-8 flex">
                       {ride.genderPreference !== 'any' && (
-                        <div className={`px-6 py-4 rounded-b-[2.5rem] text-[10px] font-black tracking-[0.3em] flex items-center gap-2 uppercase z-10 shadow-xl border-t-0 ${ride.genderPreference === 'female-only' ? 'bg-pink-600 text-white shadow-pink-100' : 'bg-slate-900 text-indigo-400 shadow-slate-200'}`}>
-                          <ShieldCheck size={14} className="fill-current/20" /> 
+                        <div className={`px-4 py-2.5 rounded-b-2xl text-[9px] font-black tracking-[0.2em] flex items-center gap-1.5 uppercase z-10 shadow-lg border-t-0 ${ride.genderPreference === 'female-only' ? 'bg-rose-500 text-white' : 'bg-slate-900 text-indigo-400'}`}>
+                          <ShieldCheck size={12} /> 
                           {ride.genderPreference.replace('-only', '')}
                         </div>
                       )}
+                      <div className="px-4 py-2.5 rounded-b-2xl bg-white text-slate-900 text-[9px] font-black tracking-[0.2em] flex items-center gap-1.5 uppercase z-10 shadow-lg border-t-0 border-l border-slate-50">
+                         {ride.vehicleType === 'Bike' ? <Bike size={12} className="text-indigo-600" /> : <Car size={12} className="text-indigo-600" />}
+                         {ride.vehicleType || 'Car'}
+                      </div>
                    </div>
 
-                   <div className="flex items-center gap-5 mb-10">
-                        <div className="h-20 w-20 rounded-2xl bg-white shadow-xl flex items-center justify-center text-slate-200 overflow-hidden border-2 border-white shrink-0 ring-4 ring-slate-50 group-hover:ring-indigo-100 transition-all duration-500 relative z-10">
+                    <div className="flex items-center gap-4 mb-4 pt-4">
+                        <div className="h-16 w-16 rounded-2xl bg-white shadow-xl flex items-center justify-center text-slate-200 overflow-hidden border-2 border-white shrink-0 ring-4 ring-slate-50 group-hover:ring-indigo-100 transition-all duration-500 relative z-10">
                            {ride.driver?.profilePhoto ? (
                               <img 
                                  src={ride.driver.profilePhoto} 
@@ -371,17 +377,17 @@ const RideResults = () => {
                               />
                            ) : <User size={36} />}
                         </div>
-                       <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1.5">
-                             <h3 className="font-black text-slate-900 text-lg group-hover:text-indigo-600 transition-colors line-clamp-1 italic tracking-tight leading-none uppercase">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                             <h3 className="font-black text-slate-900 text-base group-hover:text-indigo-600 transition-colors line-clamp-1 italic tracking-tight leading-none uppercase">
                                {ride.driver?.name}
                              </h3>
                           </div>
-                          <div className="flex flex-wrap items-center gap-3">
-                             <div className="flex items-center bg-amber-50 border border-amber-100/50 px-2 py-1 rounded-lg">
-                                <Star size={10} className="text-amber-500 fill-amber-500 mr-1" />
-                                <span className="text-[10px] font-black text-amber-900 italic tracking-tighter">{ride.driver?.averageRating || 'NEW'}</span>
-                             </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                              <div className="flex items-center bg-amber-50 border border-amber-100/50 px-2 py-0.5 rounded-lg">
+                                 <Star size={9} className="text-amber-500 fill-amber-500 mr-1" />
+                                 <span className="text-[9px] font-black text-amber-900 italic tracking-tighter">{ride.driver?.averageRating?.toFixed(1) || 'NEW'}</span>
+                              </div>
                              
                              <div className="flex items-center gap-1.5">
                                 <div className="h-1 w-10 bg-slate-100 rounded-full overflow-hidden">
@@ -396,7 +402,7 @@ const RideResults = () => {
                        </div>
                    </div>
 
-                   <div className="space-y-6 mb-12 relative px-1">
+                   <div className="space-y-3 mb-8 relative px-1">
                       <div className="flex gap-6 items-start relative pl-8">
                          {/* Visual Route Path */}
                          <div className="absolute left-2.5 top-2.5 bottom-2.5 w-[2px] bg-slate-100"></div>
@@ -407,7 +413,7 @@ const RideResults = () => {
                             <NavIcon size={10} className="text-indigo-600 fill-indigo-600" />
                          </div>
                          
-                         <div className="flex-1 space-y-8">
+                         <div className="flex-1 space-y-4">
                             <div>
                                <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1 italic">Departure</p>
                                <p className="font-black text-slate-900 text-sm leading-tight italic tracking-tight uppercase line-clamp-1">{ride.from}</p>
@@ -420,7 +426,7 @@ const RideResults = () => {
                       </div>
                    </div>
 
-                   <div className="pt-8 border-t border-slate-50 flex items-end justify-between relative z-10">
+                   <div className="pt-4 border-t border-slate-50 flex items-end justify-between relative z-10">
                       <div className="space-y-5 flex-1 pr-4">
                          <div className="flex flex-wrap items-center gap-2">
                             <div className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 flex items-center gap-2">
@@ -465,27 +471,27 @@ const RideResults = () => {
                       </div>
 
                       <div className="shrink-0">
-                         <div className="flex items-center gap-4 bg-slate-900 hover:bg-indigo-600 px-6 py-4 rounded-[2rem] transition-all duration-300 shadow-xl shadow-slate-200 group/btn">
+                         <div className="flex items-center gap-3 bg-slate-900 hover:bg-indigo-600 px-5 py-3 rounded-2xl transition-all duration-300 shadow-xl shadow-slate-200 group/btn">
                             <div className="flex flex-col items-end">
                                {ride.bookingDetails?.justiceDiscountApplied && (
-                                 <span className="text-[10px] font-black text-emerald-400 italic flex items-center gap-1 mb-0.5">
-                                    <ShieldCheck size={10} /> -₹{(ride.bookingDetails.originalFare - ride.bookingDetails.fareForPassenger).toFixed(0)}
+                                 <span className="text-[9px] font-black text-emerald-400 italic flex items-center gap-1 mb-0.5">
+                                    <ShieldCheck size={9} /> -₹{(ride.bookingDetails.originalFare - ride.bookingDetails.fareForPassenger).toFixed(0)}
                                  </span>
                                )}
-                               <p className="text-2xl font-black text-white leading-none tracking-tighter italic">
+                               <p className="text-xl font-black text-white leading-none tracking-tighter italic">
                                  ₹{ride.bookingDetails?.fareForPassenger || ride.price}
                                </p>
-                               <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mt-1">Book Trip</p>
+                               <p className="text-[7px] font-black text-white/40 uppercase tracking-widest mt-1">Book Trip</p>
                             </div>
-                            <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center group-hover/btn:scale-110 group-hover/btn:bg-white/20 transition-all text-white">
-                               <ArrowRight size={20} />
+                            <div className="h-8 w-8 bg-white/10 rounded-lg flex items-center justify-center group-hover/btn:scale-110 group-hover/btn:bg-white/20 transition-all text-white">
+                               <ArrowRight size={16} />
                             </div>
                          </div>
                       </div>
                    </div>
 
                    {/* Booking Countdown Strip */}
-                   <div className="mt-8 pt-4 border-t border-slate-50 flex items-center justify-between opacity-50 group-hover:opacity-100 transition-opacity">
+                   <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between opacity-50 group-hover:opacity-100 transition-opacity">
                       <div className="flex items-center gap-2">
                          <Clock size={12} className="text-slate-400" />
                          <RideCountdown date={ride.date} time={ride.time} expiresAt={ride.expiresAt} />
@@ -541,10 +547,10 @@ const RideResults = () => {
                             <div className="flex items-center gap-4 mt-2">
                                <div className="flex items-center gap-1.5">
                                  <Star size={18} className="text-amber-500 fill-amber-500" />
-                                 <span className="font-extrabold text-slate-600 text-lg">{selectedRide.driver?.averageRating || '0.0'}</span>
+                                 <span className="font-extrabold text-slate-800 text-lg">{selectedRide.driver?.averageRating?.toFixed(1) || '0.0'}</span>
                                </div>
                                <div className="h-1 w-1 rounded-full bg-slate-500"></div>
-                               <span className="text-sm font-bold text-slate-600 uppercase tracking-[.15em]">{selectedRide.driver?.totalRatings} reviews</span>
+                               <span className="text-sm font-bold text-slate-600 uppercase tracking-[.15em]">{selectedRide.driver?.totalRatings || 0} reviews</span>
                                <div className="h-1 w-1 rounded-full bg-slate-500"></div>
                                <div className="flex items-center gap-1.5 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-100/50">
                                  <Calendar size={14} className="text-indigo-600" />
@@ -630,7 +636,7 @@ const RideResults = () => {
                             </h4>
                             <div className="bg-[#F8FAFC] p-8 rounded-[3rem] border border-slate-100 flex items-center gap-6 shadow-inner">
                                <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm border border-slate-50">
-                                  <Car size={32} />
+                                  {selectedRide.vehicleType === 'Bike' ? <Bike size={32} /> : <Car size={32} />}
                                </div>
                                <div>
                                   <p className="font-black text-slate-800 text-lg uppercase tracking-tight leading-none mb-2 italic">{selectedRide.carModel}</p>
@@ -775,12 +781,12 @@ const RideResults = () => {
                 </div>
 
                 {/* Sticky Right Side */}
-                <div className="w-full md:w-[380px] bg-slate-900 p-8 md:p-10 text-white flex flex-col justify-between relative overflow-y-auto overflow-x-hidden no-scrollbar">
+                <div className="w-full md:w-[380px] bg-slate-900 p-6 md:p-8 text-white flex flex-col justify-between relative overflow-y-auto overflow-x-hidden no-scrollbar">
                    <div className="absolute inset-0 bg-gradient-to-tr from-indigo-950 to-slate-900 -z-0"></div>
                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
                    
                    <div className="relative z-10">
-                      <div className="mb-8">
+                      <div className="mb-4">
                          <p className="text-indigo-300/60 font-black text-[10px] uppercase tracking-[0.4em] mb-4 font-outfit">Smart Calculated Fare</p>
                           <div className="flex flex-col mb-4">
                              {selectedRide.bookingDetails?.justiceDiscountApplied && (
@@ -807,7 +813,7 @@ const RideResults = () => {
                          </div>
                       </div>
 
-                      <div className="space-y-4 bg-white/5 p-6 rounded-[2rem] border border-white/10 backdrop-blur-md">
+                      <div className="space-y-2 bg-white/5 p-4 rounded-[1.5rem] border border-white/10 backdrop-blur-md">
                          <div className="flex items-center justify-between text-xs">
                             <span className="text-slate-400 font-black uppercase tracking-widest text-[8px]">Platform Tax</span>
                             <span className="font-black text-indigo-400 italic">OFF</span>
@@ -825,7 +831,7 @@ const RideResults = () => {
                       </div>
                    </div>
 
-                   <div className="relative z-10 space-y-6 pt-8">
+                   <div className="relative z-10 space-y-4 pt-4">
                       <div className="flex items-start gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
                          <div className="h-10 w-10 bg-indigo-600/20 rounded-xl flex items-center justify-center shrink-0 border border-indigo-500/20">
                             <Info size={18} className="text-indigo-300" />

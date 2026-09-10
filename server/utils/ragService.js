@@ -156,13 +156,9 @@ class RagService {
     await this.initVectorStore();
     const history = await this.getChatHistory(threadId);
 
-    const categoryFilter = await this.routeQuestion(question);
-    console.log(`Routing query to category: ${categoryFilter || 'none'}`);
-
-    // Pinecone Filter Format: { "category": "financial" }
-    const filter = categoryFilter ? {
-      category: categoryFilter
-    } : null;
+    // REMOVED BRITTLE FILTERING: Global search is better for small knowledge bases
+    const filter = null; 
+    console.log(`Searching all documents for: "${question}"`);
 
     // Ensure API Key is in environment for buggy SDK check
     process.env.PINECONE_API_KEY = process.env.PINECONE_API_KEY || this.pc.apiKey;
@@ -183,12 +179,22 @@ class RagService {
 
     const retriever = this.vectorStore.asRetriever({
       filter: filter,
-      k: 4
+      k: 6
     });
 
     const context = await retriever.invoke(finalQuery);
     
-    const systemPrompt = "You are an expert helper for RideDosthi. Use only the context below to answer. Context: {context}";
+    const systemPrompt = `You are RideDosthi AI, the official mission-control support for the platform. 
+    Your goal is to provide precise, helpful, and professional assistance using ONLY the provided context.
+    
+    CRITICAL ROLES:
+    - PASSENGER: The user who searches for and BOOKS a ride.
+    - RIDER: The user who OFFERS/Drives a ride (Driver).
+    
+    If the context doesn't contain the answer, say "I don't have that specific information in my current training documents, please check our help center." 
+    NEVER hallucinate or suggest steps from generic ride-sharing apps.
+    
+    Context: {context}`;
     const qaPrompt = ChatPromptTemplate.fromMessages([
       ["system", systemPrompt],
       new MessagesPlaceholder("chat_history"),

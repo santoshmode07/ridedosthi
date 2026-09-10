@@ -4,10 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, ShieldCheck, Star, Users, MapPin, 
   Sparkles, CheckCircle2, TrendingUp, Zap, Award, 
-  LayoutDashboard, LogOut, ChevronRight, Globe, Lock
+  LayoutDashboard, LogOut, ChevronRight, Globe, Lock,
+  Bike, Car, Smartphone, Shield, Clock, Heart, Scale
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import heroImage from '../assets/hero.png';
+import heroImage from '../assets/hero_v2.png';
 import mockupImage from '../assets/mockup.png';
 
 const Home = () => {
@@ -16,58 +17,83 @@ const Home = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Safety', href: '#safety' },
-    { name: 'Features', href: '#features' },
+    { name: 'Vehicle Options', href: '#vehicles' },
+    { name: 'Safety First', href: '#safety' },
+    { name: 'Community', href: '#community' },
+  ];
+
+  const vehicleTypes = [
+    {
+      id: 'car',
+      icon: Car,
+      name: 'Prime Car',
+      desc: 'Comfortable, climate-controlled rides for your daily commute.',
+      tag: 'Most Popular',
+      color: 'from-blue-600 to-indigo-600'
+    },
+    {
+      id: 'bike',
+      icon: Bike,
+      name: 'Swift Bike',
+      desc: 'Beat the traffic with quick, agile, and cost-effective bike rides.',
+      tag: 'Fastest',
+      color: 'from-orange-500 to-red-600'
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] font-outfit selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
-      {/* Premium Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-6 md:px-12 py-4 md:py-6 ${
-        scrolled ? 'bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm' : 'bg-transparent'
-      }`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-200 transform hover:rotate-12 transition-transform duration-300">
-              <LayoutDashboard className="text-white h-5 w-5" />
-            </div>
-            <span className="font-bold text-2xl tracking-tighter text-slate-800">Ride<span className="text-indigo-600">Dosthi</span></span>
-          </div>
+    <div className="min-h-screen bg-[#050505] text-white font-outfit selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
 
-          <div className="hidden lg:flex items-center gap-10">
+      {/* Modern Navbar */}
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-6 md:px-12 py-5 ${
+        scrolled ? 'bg-black/40 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between relative h-full">
+          <Link to="/" className="flex items-center gap-3 group shrink-0 relative z-10">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:rotate-12 transition-transform">
+              <Zap className="text-white h-6 w-6 fill-current" />
+            </div>
+            <span className="font-bold text-2xl tracking-tighter text-white">Ride<span className="text-indigo-400">Dosthi</span></span>
+          </Link>
+
+          <div className="hidden lg:flex items-center justify-center gap-8 absolute inset-0 mx-auto w-max h-full">
             {navLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href} 
-                className="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors tracking-tight"
+                className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60 hover:text-indigo-400 transition-colors"
               >
                 {link.name}
               </a>
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 shrink-0 relative z-10">
             {token ? (
               <>
-                <Link to="/dashboard" className="hidden sm:flex items-center gap-2 bg-indigo-50 text-indigo-600 px-5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-100 transition-all">
+                <Link to="/dashboard" className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 text-white px-5 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-white/20 transition-all">
                   Dashboard <ChevronRight size={14} />
                 </Link>
-                <button onClick={logout} className="p-2.5 rounded-xl bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-500 transition-all border border-slate-200/50">
+                <button onClick={logout} className="p-2.5 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all">
                   <LogOut size={20} />
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors mr-2">Login</Link>
-                <Link to="/register" className="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.1em] hover:bg-slate-900 transition-all shadow-xl shadow-indigo-200 active:scale-95">
-                  Join Community
+                <Link to="/login" className="text-sm font-bold text-white/70 hover:text-white transition-colors mr-2">Login</Link>
+                <Link to="/register" className="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.1em] hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-500/20 active:scale-95">
+                  Join Now
                 </Link>
               </>
             )}
@@ -76,76 +102,75 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden">
-        {/* Background Gradients */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 -z-10 opacity-60"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 -z-10 opacity-60"></div>
-
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
-          <div className="flex-1 text-center lg:text-left">
+      <section className="relative min-h-[80vh] flex items-center pt-24 pb-16 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 md:gap-20">
+          <div className="flex-1 text-center lg:text-left z-10">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <span className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-[10px] font-black tracking-[0.2em] uppercase mb-8 border border-indigo-100 shadow-sm">
-                <Sparkles size={14} className="animate-pulse" /> The Future of Transit is Shared
-              </span>
-              <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 tracking-tighter leading-[0.9] mb-8">
-                Rideshare with <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 italic">Confidence.</span>
+              <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full text-[10px] font-black tracking-[0.2em] uppercase mb-8">
+                <Sparkles size={14} /> Car & Bike Ridesharing Redefined
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-[1.1] mb-6 max-w-4xl mx-auto lg:mx-0">
+                Every Journey,<br />
+                <span className="inline-block py-2 pr-6 -mr-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 animate-gradient-x italic">A Trusted Dosthi.</span>
               </h1>
-              <p className="text-slate-500 text-xl font-medium max-w-2xl mx-auto lg:mx-0 mb-12 leading-relaxed">
-                Connect with verified professionals and students in a secure, community-driven network. Save costs, reduce carbon, and travel safe.
+              <p className="text-white/60 text-lg md:text-xl font-medium max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+                Whether you prefer the comfort of a <span className="text-white">Car</span> or the speed of a <span className="text-white">Bike</span>, RideDosthi connects you with verified professionals for a smarter, safer, and cheaper commute.
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
-                <Link to="/register" className="w-full sm:w-auto bg-indigo-600 text-white px-10 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-slate-900 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-indigo-200 group active:scale-95">
-                  Get Started Now <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <Link to="/find-rides" className="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-indigo-400 hover:text-white transition-all flex items-center justify-center gap-3 shadow-2xl shadow-indigo-500/20 group active:scale-95">
+                  Book a ride <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                 </Link>
-                <Link to="/find-rides" className="w-full sm:w-auto bg-white text-slate-700 px-10 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-all border border-slate-200 flex items-center justify-center gap-3 shadow-sm active:scale-95">
-                  Find a Ride
+                <Link to="/offer-ride" className="w-full sm:w-auto bg-white/5 backdrop-blur-md text-white border border-white/10 px-10 py-5 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-3 active:scale-95">
+                  Offer a Ride
                 </Link>
               </div>
 
-              <div className="mt-12 flex flex-wrap items-center justify-center lg:justify-start gap-8 opacity-60">
-                <div className="flex items-center gap-2 text-slate-700">
-                  <ShieldCheck size={18} className="text-indigo-600" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Aadhaar Verified</span>
+              <div className="mt-16 flex flex-wrap items-center justify-center lg:justify-start gap-10 opacity-40">
+                <div className="flex items-center gap-3">
+                  <ShieldCheck size={20} className="text-indigo-400" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Verified Members Only</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-700">
-                  <Award size={18} className="text-indigo-600" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Premium Community</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-700">
-                  <Globe size={18} className="text-indigo-600" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Eco-Friendly</span>
+                <div className="flex items-center gap-3">
+                  <Heart size={20} className="text-purple-400" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Zero Carbon Mission</span>
                 </div>
               </div>
             </motion.div>
           </div>
 
           <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex-1 relative"
+            initial={{ opacity: 0, scale: 0.9, rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="flex-1 relative w-full lg:w-auto"
           >
-            <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] border-8 border-white">
-              <img src={heroImage} alt="Premium Ride Sharing" className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-1000" />
+            <div className="relative z-10 rounded-[3rem] overflow-hidden border-4 border-white/5 shadow-[0_0_80px_-20px_rgba(79,70,229,0.3)] group max-h-[400px] md:max-h-[480px] flex items-center justify-center">
+              <img 
+                src={heroImage} 
+                alt="Car and Bike Mobility" 
+                className="w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-[2s]" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             </div>
-            {/* Float Floating Badges */}
+            
+            {/* Stats Card */}
             <motion.div 
-              animate={{ y: [0, -20, 0] }}
-              transition={{ repeat: Infinity, duration: 4 }}
-              className="absolute -top-10 -right-10 bg-white p-6 rounded-[2rem] shadow-2xl border border-slate-100 hidden md:block z-20"
+              animate={{ y: [0, -15, 0] }}
+              transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+              className="absolute -bottom-4 -left-6 bg-black/40 backdrop-blur-xl p-5 md:p-6 rounded-[2.5rem] border border-white/10 shadow-2xl z-20 hidden md:block group/stats"
             >
               <div className="flex items-center gap-4">
-                <div className="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
-                  <ShieldCheck size={28} />
+                <div className="h-12 w-12 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center border border-indigo-500/30 group-hover/stats:scale-110 transition-transform">
+                  <TrendingUp size={24} />
                 </div>
                 <div>
-                  <p className="font-black text-slate-800 text-sm italic tracking-tight">Verified Driver</p>
-                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Safety Pass Active</p>
+                  <p className="font-black text-xl text-white tracking-tighter leading-none mb-1">98.5%</p>
+                  <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] leading-none">Match Accuracy</p>
                 </div>
               </div>
             </motion.div>
@@ -153,182 +178,148 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Trust Brands Section */}
-      <section className="py-20 bg-white border-y border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em] mb-12">Trusted co-riders from leading organizations</p>
-          <div className="flex flex-wrap items-center justify-center gap-12 md:gap-24 font-black text-slate-200 text-3xl md:text-4xl tracking-[0.3em] italic uppercase opacity-50 hover:opacity-100 transition-all duration-700">
-            <span className="hover:text-indigo-600 transition-colors cursor-default">Microsoft</span>
-            <span className="hover:text-indigo-600 transition-colors cursor-default">Google</span>
-            <span className="hover:text-indigo-600 transition-colors cursor-default">TCS</span>
-            <span className="hover:text-indigo-600 transition-colors cursor-default">Infosys</span>
-            <span className="hover:text-indigo-600 transition-colors cursor-default">Amazon</span>
-          </div>
+      {/* Vehicle Type Section */}
+      <section id="vehicles" className="py-32 px-6 bg-white/5 border-y border-white/5">
+        <div className="max-w-7xl mx-auto text-center mb-20">
+          <span className="text-indigo-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4 block">Choose Your Mode</span>
+          <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">Two Ways to <span className="italic">Dosthi</span>.</h2>
+        </div>
+
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+          {vehicleTypes.map((type, i) => (
+            <motion.div 
+              key={type.id}
+              whileHover={{ y: -10 }}
+              className="bg-white/5 backdrop-blur-sm border border-white/10 p-10 rounded-[3.5rem] flex flex-col items-center text-center group hover:bg-white/[0.08] transition-all"
+            >
+              <div className={`h-24 w-24 rounded-3xl bg-gradient-to-br ${type.color} flex items-center justify-center mb-8 shadow-2xl group-hover:scale-110 transition-transform`}>
+                <type.icon size={48} className="text-white" />
+              </div>
+              <span className="bg-white/10 text-white/60 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-6">
+                {type.tag}
+              </span>
+              <h3 className="text-3xl font-black text-white mb-4 tracking-tighter">{type.name}</h3>
+              <p className="text-white/60 font-medium leading-relaxed mb-8 max-w-[250px]">
+                {type.desc}
+              </p>
+              <button className="text-indigo-400 font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2 group-hover:gap-4 transition-all">
+                Learn More <ChevronRight size={16} />
+              </button>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-32 px-6 bg-[#FDFDFF] relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-6">Designed for <span className="text-indigo-600 italic">Modern</span> Mobility.</h2>
-            <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto leading-relaxed">We've built the world's most secure ride-sharing platform for professionals, focus on safety, community, and efficiency.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              { 
-                icon: ShieldCheck, 
-                title: 'ID-Pass Verified', 
-                desc: 'Every member must pass Aadhaar and License verification before joining.',
-                color: 'text-indigo-500',
-                bg: 'bg-indigo-50'
-              },
-              { 
-                icon: Users, 
-                title: 'Professional Circle', 
-                desc: 'Connect with verified colleagues and co-workers from top organizations.',
-                color: 'text-purple-500',
-                bg: 'bg-purple-50'
-              },
-              { 
-                icon: Zap, 
-                title: 'Smart Matching', 
-                desc: 'Our radar-based search finds the most efficient routes and timings for you.',
-                color: 'text-amber-500',
-                bg: 'bg-amber-50'
-              }
-            ].map((feature, i) => (
-              <motion.div 
-                key={i}
-                whileHover={{ y: -10 }}
-                className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-100/50 hover:shadow-2xl hover:shadow-indigo-100 transition-all group"
-              >
-                <div className={`${feature.bg} ${feature.color} h-16 w-16 rounded-2xl flex items-center justify-center mb-8 border border-slate-50 shadow-inner group-hover:scale-110 transition-transform`}>
-                  <feature.icon size={32} />
+      {/* Safety Matrix */}
+      <section id="safety" className="py-40 px-6 relative overflow-hidden bg-[#0a0a0a]">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-600/5 rounded-full blur-[150px]"></div>
+        
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-24">
+          <div className="flex-1 order-2 lg:order-1">
+            <div className="grid grid-cols-2 gap-6">
+              {[
+                { icon: Scale, title: "Justice Protocol", desc: "Automated penalties for late cancellations and no-shows." },
+                { icon: TrendingUp, title: "Dynamic Pricing", desc: "AI-driven price optimization based on real-time route demand." },
+                { icon: ShieldCheck, title: "Aadhaar Vetted", desc: "Strict manual verification of every driver's credentials." },
+                { icon: Lock, title: "Escrow System", desc: "Payments held securely until safe journey completion." }
+              ].map((item, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-[2.5rem] hover:border-indigo-500/30 transition-all hover:bg-white/[0.07]">
+                  <item.icon className="text-indigo-400 mb-6 h-10 w-10" />
+                  <h4 className="text-lg font-bold text-white mb-2 uppercase italic leading-none">{item.title}</h4>
+                  <p className="text-white/40 text-xs leading-relaxed font-medium">{item.desc}</p>
                 </div>
-                <h3 className="text-2xl font-black text-slate-800 mb-4 tracking-tight">{feature.title}</h3>
-                <p className="text-slate-500 font-medium leading-relaxed">{feature.desc}</p>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Mockup Section */}
-      <section id="safety" className="py-32 bg-slate-900 overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500-10 rounded-full blur-[150px] opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-24">
-          <div className="flex-1 relative order-2 lg:order-1">
-             <div className="relative z-10 rounded-[3.5rem] overflow-hidden shadow-2xl shadow-indigo-500/20 ring-1 ring-white/10 max-w-sm mx-auto lg:mx-0">
-                <img src={mockupImage} alt="App Mockup" className="w-full h-auto" />
-             </div>
-             {/* Decorative particles */}
-             <div className="absolute -top-10 -left-10 h-32 w-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
-             <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-purple-500/20 rounded-full blur-3xl"></div>
-          </div>
-          <div className="flex-1 order-1 lg:order-2 text-white">
-            <span className="text-indigo-400 font-black text-[10px] uppercase tracking-[0.4em] mb-8 inline-block">Safety Protocol One</span>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-[0.9]">Experience the <span className="text-indigo-400 italic">Verified</span> Difference.</h2>
-            <div className="space-y-8">
-               {[
-                 { title: 'Biometric Verification', desc: 'Secure login and multi-factor authentication for every ride.' },
-                 { title: 'Gender Preference', desc: 'Specialized safe zones for female passengers and drivers.' },
-                 { title: 'Live Trip Intel', desc: 'Share your live route coordinates with emergency contacts instantly.' }
-               ].map((item, i) => (
-                 <div key={i} className="flex gap-6 items-start group">
-                    <div className="h-8 w-8 bg-indigo-500/20 rounded-full flex items-center justify-center shrink-0 border border-indigo-500/30 group-hover:bg-indigo-500 transition-colors">
-                       <CheckCircle2 size={16} className="text-indigo-400 group-hover:text-white" />
-                    </div>
-                    <div>
-                       <h4 className="text-xl font-bold tracking-tight mb-2 italic uppercase">{item.title}</h4>
-                       <p className="text-slate-400 font-medium leading-relaxed">{item.desc}</p>
-                    </div>
-                 </div>
-               ))}
+          
+          <div className="flex-1 order-1 lg:order-2">
+            <span className="text-indigo-400 font-black text-[10px] uppercase tracking-[0.4em] mb-8 block">The Trust Framework</span>
+            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-8 leading-[0.9]">Built on <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 italic">Integrity.</span></h2>
+            <p className="text-white/60 text-lg font-medium leading-relaxed mb-10">
+              RideDosthi isn't just a matching platform. We've built an AI-driven justice system that enforces accountability through strict protocols and verified community trust.
+            </p>
+            <div className="flex items-center gap-8">
+              <div className="flex -space-x-4">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="h-14 w-14 rounded-2xl border-4 border-[#050505] bg-slate-800 overflow-hidden shadow-xl">
+                    <img src={`https://i.pravatar.cc/100?img=${i+20}`} alt="user" className="grayscale hover:grayscale-0 transition-all" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-white font-bold italic">Join 15,000+ <br/><span className="text-indigo-400">Verified Riders</span></p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-32 px-6">
+      {/* CTA Final */}
+      <section id="community" className="py-40 px-6">
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-7xl mx-auto bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[4rem] p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl shadow-indigo-200"
+          className="max-w-7xl mx-auto bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-[5rem] p-16 md:p-32 text-center relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(79,70,229,0.5)]"
         >
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full translate-x-1/2 -translate-y-1/2 blur-[80px]"></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
           <div className="relative z-10">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-10 leading-none">Ready to start your <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50 italic">Next Journey?</span></h2>
+            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-10 leading-none">Stop Waiting. <br/><span className="text-white/60 italic">Start Dosthi.</span></h2>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link to="/register" className="w-full sm:w-auto bg-white text-indigo-700 px-12 py-6 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-2xl active:scale-95">
-                Join Now Free
+              <Link to="/register" className="w-full sm:w-auto bg-white text-indigo-700 px-14 py-7 rounded-[2.5rem] font-black text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-all active:scale-95 shadow-2xl">
+                Create Account
               </Link>
-              <Link to="/find-rides" className="w-full sm:w-auto bg-indigo-500/30 backdrop-blur-md text-white border border-white/20 px-12 py-6 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95">
-                Calculate Savings
+              <Link to="/find-rides" className="w-full sm:w-auto bg-black/20 backdrop-blur-md text-white border border-white/20 px-14 py-7 rounded-[2.5rem] font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95">
+                Quick Search
               </Link>
             </div>
-            <p className="mt-12 text-indigo-200 font-bold uppercase tracking-[0.2em] text-xs">Join 10,000+ verified professionals today</p>
           </div>
         </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className="py-24 bg-white border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16">
+      <footer className="py-24 px-6 border-t border-white/5 bg-black/40">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
           <div className="col-span-1 md:col-span-1">
-             <div className="flex items-center gap-3 mb-8">
+             <Link to="/" className="flex items-center gap-3 mb-10">
                 <div className="bg-indigo-600 p-2 rounded-xl shadow-lg">
-                  <LayoutDashboard className="text-white h-5 w-5" />
+                  <Zap className="text-white h-6 w-6 fill-current" />
                 </div>
-                <span className="font-bold text-2xl tracking-tighter text-slate-800">Ride<span className="text-indigo-600">Dosthi</span></span>
-             </div>
-             <p className="text-slate-500 font-medium leading-relaxed mb-10">Revolutionizing urban transit through verified community trust and shared journeys.</p>
+                <span className="font-bold text-2xl tracking-tighter text-white">Ride<span className="text-indigo-400">Dosthi</span></span>
+             </Link>
+             <p className="text-white/40 font-medium leading-relaxed mb-10">Beyond ridesharing. Building community trust one journey at a time. Car or bike, we've got you covered.</p>
              <div className="flex gap-4">
-               {/* Social placeholders */}
-               <div className="h-12 w-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:text-indigo-600 cursor-pointer transition-all">
-                  <Globe size={20} />
-               </div>
-               <div className="h-12 w-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 hover:text-indigo-600 cursor-pointer transition-all">
-                  <Lock size={20} />
-               </div>
+               {[Globe, Lock, Users].map((Icon, i) => (
+                 <div key={i} className="h-12 w-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-white/40 hover:text-indigo-400 hover:border-indigo-400 cursor-pointer transition-all">
+                    <Icon size={20} />
+                 </div>
+               ))}
              </div>
           </div>
           
-          <div>
-            <h4 className="text-slate-800 font-black text-sm uppercase tracking-widest mb-8">Product</h4>
-            <ul className="space-y-4 text-slate-500 font-bold text-sm">
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Find a Ride</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Offer a Ride</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Enterprise</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Price Match</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-slate-800 font-black text-sm uppercase tracking-widest mb-8">Resources</h4>
-            <ul className="space-y-4 text-slate-500 font-bold text-sm">
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Safety Protocol</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Verified Drivers</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Student Plan</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Carbon Report</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-slate-800 font-black text-sm uppercase tracking-widest mb-8">Legal</h4>
-            <ul className="space-y-4 text-slate-500 font-bold text-sm">
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Privacy Policy</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Terms of Service</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Compliance</li>
-               <li className="hover:text-indigo-600 cursor-pointer transition-colors">Biometrics Consent</li>
-            </ul>
-          </div>
+          {[
+            { title: "Vehicles", links: ["Electric Cars", "Eco Bikes", "Carpool", "Bike Pool"] },
+            { title: "Network", links: ["Safe Zones", "Top Routes", "Enterprise", "University"] },
+            { title: "Support", links: ["Safety Center", "Help Hub", "Justice Protocol", "Audit Logs"] }
+          ].map((col, i) => (
+            <div key={i}>
+              <h4 className="text-white font-black text-xs uppercase tracking-[0.3em] mb-10">{col.title}</h4>
+              <ul className="space-y-4">
+                {col.links.map((link, j) => (
+                  <li key={j} className="text-white/40 font-bold text-sm hover:text-indigo-400 cursor-pointer transition-colors flex items-center gap-2 group">
+                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    {link}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-        <div className="max-w-7xl mx-auto px-6 mt-20 pt-10 border-t border-slate-50 text-center">
-           <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">© 2026 RideDosthi Transit Systems. Handcrafted by Design Mavericks.</p>
+        <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+           <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em]">© 2026 RideDosthi. High-Velocity Mobility.</p>
+           <div className="flex gap-8">
+              <span className="text-[9px] font-black text-white/20 uppercase hover:text-white transition-colors cursor-pointer tracking-widest">Privacy</span>
+              <span className="text-[9px] font-black text-white/20 uppercase hover:text-white transition-colors cursor-pointer tracking-widest">Terms</span>
+              <span className="text-[9px] font-black text-white/20 uppercase hover:text-white transition-colors cursor-pointer tracking-widest">Cookies</span>
+           </div>
         </div>
       </footer>
     </div>

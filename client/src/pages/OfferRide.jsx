@@ -5,7 +5,7 @@ import {
   MapPin, Calendar, Clock, Users, Car, CreditCard, ShieldCheck, 
   ArrowRight, Loader2, Info, LayoutDashboard, LogOut, Sparkles,
   ChevronRight, Briefcase, Navigation, AlertCircle, CheckCircle2,
-  Ban, Mail, Scale, History, ShieldAlert, Globe, Zap, X
+  Ban, Mail, Scale, History, ShieldAlert, Globe, Zap, X, Bike
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../api/axios';
@@ -238,21 +238,37 @@ const OfferRide = () => {
                         <label className={labelClass}>Travel Date</label>
                         <div className={inputContainerClass}>
                            <Calendar className={iconClass} />
-                           <input name="date" type="date" className="input-field !py-4 pl-14 font-bold" value={formData.date} onChange={handleChange} required />
+                            <input 
+                              name="date" 
+                              type="date" 
+                              className="input-field !py-4 pl-12 pr-2 font-bold [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
+                              value={formData.date} 
+                              onChange={handleChange} 
+                              onClick={(e) => e.target.showPicker?.()}
+                              required 
+                            />
                         </div>
                      </div>
                      <div className="space-y-4">
                         <label className={labelClass}>Departure Time</label>
                         <div className={inputContainerClass}>
                            <Clock className={iconClass} />
-                           <input name="time" type="time" className="input-field !py-4 pl-14 font-bold" value={formData.time} onChange={handleChange} required />
+                            <input 
+                              name="time" 
+                              type="time" 
+                              className="input-field !py-4 pl-12 pr-2 font-bold [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
+                              value={formData.time} 
+                              onChange={handleChange} 
+                              onClick={(e) => e.target.showPicker?.()}
+                              required 
+                            />
                         </div>
                      </div>
                      <div className="space-y-4">
                         <label className={labelClass}>Available Seats</label>
                         <div className={inputContainerClass}>
                            <Users className={iconClass} />
-                           <input name="seatsAvailable" type="number" min="1" max="6" className="input-field !py-4 pl-14 font-bold" value={formData.seatsAvailable} onChange={handleChange} required />
+                            <input name="seatsAvailable" type="number" min="1" max="6" className="input-field !py-4 pl-12 font-bold" value={formData.seatsAvailable} onChange={handleChange} required />
                         </div>
                      </div>
                      <div className="space-y-4">
@@ -270,7 +286,7 @@ const OfferRide = () => {
                         </div>
                         <div className={inputContainerClass}>
                            <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-indigo-600 text-lg pointer-events-none">₹</span>
-                           <input name="price" type="number" placeholder="500" className="input-field !py-4 pl-14 font-black text-lg text-indigo-600" value={formData.price} onChange={handleChange} required />
+                            <input name="price" type="number" placeholder="500" className="input-field !py-4 pl-12 font-black text-lg text-indigo-600" value={formData.price} onChange={handleChange} required />
                         </div>
                         <AnimatePresence>
                           {isPredicting ? (
@@ -334,7 +350,7 @@ const OfferRide = () => {
                         <label className={labelClass}>Waiting Duration (Mins)</label>
                         <div className={inputContainerClass}>
                            <Clock className={iconClass} />
-                           <input name="waitingTime" type="number" min="5" max="60" className="input-field !py-4 pl-14 font-bold" value={formData.waitingTime} onChange={handleChange} required />
+                           <input name="waitingTime" type="number" min="1" max="60" className="input-field !py-4 pl-14 font-bold" value={formData.waitingTime} onChange={handleChange} required />
                         </div>
                         <p className="text-[10px] font-bold text-slate-400 italic ml-1">Time to wait for passengers before starting.</p>
                      </div>
@@ -362,13 +378,13 @@ const OfferRide = () => {
                              onClick={() => setFormData({...formData, vehicleType: type, seatsAvailable: type === 'Bike' ? 1 : 4})}
                              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest ${formData.vehicleType === type ? 'bg-white text-slate-900 shadow-xl' : 'text-white/40 hover:text-white/60'}`}
                            >
-                             {type === 'Car' ? <Car size={14} /> : <Zap size={14} />} {type}
+                             {type === 'Car' ? <Car size={14} /> : <Bike size={14} />} {type}
                            </button>
                         ))}
                      </div>
                      <div className="space-y-3">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Vehicle Model</label>
-                        <input name="carModel" type="text" placeholder="Swift Dzire - White" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-indigo-500 transition-all font-bold placeholder:text-white/20" value={formData.carModel} onChange={handleChange} required />
+                        <input name="carModel" type="text" placeholder="e.g. Swift Dzire / Royal Enfield" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-indigo-500 transition-all font-bold placeholder:text-white/20" value={formData.carModel} onChange={handleChange} required />
                      </div>
                      <div className="space-y-3">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Vehicle Plate No.</label>

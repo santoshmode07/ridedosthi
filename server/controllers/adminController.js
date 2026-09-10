@@ -6,6 +6,12 @@ const socketManager = require('../utils/socketManager');
 let dashboardCache = null;
 let cacheTime = null;
 
+const clearAdminCache = () => {
+    dashboardCache = null;
+    cacheTime = null;
+    console.log('[Admin] Cache Invalidated');
+};
+
 exports.getAdminStats = async (req, res) => {
     try {
         // Optimization: 5-minute cache
@@ -127,13 +133,6 @@ exports.settleDispute = async (req, res) => {
 
         // Idempotency check: Ensure the dispute is still active
         if (booking.dropoffStatus !== 'disputed') {
-            return res.status(400).json({ 
-                success: false, 
-                message: `This incident has already been resolved (Current status: ${booking.dropoffStatus})` 
-            });
-        }
-
-        if (booking.dropoffStatus !== 'disputed') {
             return res.status(400).json({ success: false, message: 'This booking is not currently in dispute' });
         }
 
@@ -204,7 +203,8 @@ exports.settleDispute = async (req, res) => {
         await driver.save();
         await ride.save();
 
-        // Real Time Update for Driver & Passenger
+        // Real Time Update & Cache Clear
+        clearAdminCache();
         socketManager.emitToUser(driver._id, 'wallet_updated', {
             newBalance: driver.walletBalance,
             transaction: { type: 'credit', amount: originalFare, description: 'Dispute Settled' }
@@ -308,7 +308,8 @@ exports.refundDispute = async (req, res) => {
         await passenger.save();
         await ride.save();
 
-        // Real Time Update for Passenger
+        // Real Time Update & Cache Clear
+        clearAdminCache();
         socketManager.emitToUser(passengerId, 'wallet_updated', {
             newBalance: passenger.walletBalance,
             transaction: { type: 'credit', amount: originalFare, description: 'Ride Refunded' }
